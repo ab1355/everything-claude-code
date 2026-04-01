@@ -36,7 +36,7 @@
 
 Not just configs. A complete system: skills, instincts, memory optimization, continuous learning, security scanning, and research-first development. Production-ready agents, hooks, commands, rules, and MCP configurations evolved over 10+ months of intensive daily use building real products.
 
-Works across **Claude Code**, **Codex**, **Cowork**, and other AI agent harnesses.
+Works across **Claude Code**, **Codex**, **Cowork**, **VS Code**, **Zed**, **Pi.dev**, and other AI agent harnesses.
 
 ---
 
@@ -881,13 +881,16 @@ Each component is fully independent.
 </details>
 
 <details>
-<summary><b>Does this work with Cursor / OpenCode / Codex / Antigravity?</b></summary>
+<summary><b>Does this work with Cursor / OpenCode / Codex / Antigravity / VS Code / Zed / Pi.dev?</b></summary>
 
 Yes. ECC is cross-platform:
 - **Cursor**: Pre-translated configs in `.cursor/`. See [Cursor IDE Support](#cursor-ide-support).
 - **OpenCode**: Full plugin support in `.opencode/`. See [OpenCode Support](#-opencode-support).
 - **Codex**: First-class support for both macOS app and CLI, with adapter drift guards and SessionStart fallback. See PR [#257](https://github.com/affaan-m/everything-claude-code/pull/257).
 - **Antigravity**: Tightly integrated setup for workflows, skills, and flattened rules in `.agent/`. See [Antigravity Guide](docs/ANTIGRAVITY-GUIDE.md).
+- **VS Code**: Install scripts and workspace settings in `.vscode/`. See [VS Code Support](#-vs-code-support).
+- **Zed**: Install scripts and AI assistant settings in `.zed/`. See [Zed Support](#-zed-support).
+- **Pi.dev**: Skills and settings in `.pi/`. See [Pi.dev Support](#-pidev-support).
 - **Claude Code**: Native — this is the primary target.
 </details>
 
@@ -1212,25 +1215,103 @@ For the full ECC OpenCode setup, either:
 
 ---
 
+## 🖥️ VS Code Support
+
+ECC provides VS Code support with workspace settings and the full ECC component library for use with the [Claude Code extension](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+
+### Quick Start (VS Code)
+
+```bash
+# Install to current project
+.vscode/install.sh
+
+# Install globally
+.vscode/install.sh ~
+```
+
+The installer copies commands, agents, skills, rules, and `AGENTS.md` to your project, and creates:
+- `.vscode/settings.json` — workspace settings with `editor.formatOnSave`, `files.trimTrailingWhitespace`, and Claude Code extension config
+- `.vscode/extensions.json` — recommends the Claude Code extension (`anthropic.claude-code`)
+
+### Documentation
+
+- **VS Code README**: `.vscode/README.md`
+
+---
+
+## ⚡ Zed Support
+
+ECC provides [Zed](https://zed.dev) support with AI assistant settings and the full ECC component library for use with Zed's built-in Anthropic/Claude integration.
+
+### Quick Start (Zed)
+
+```bash
+# Install to current project
+.zed/install.sh
+
+# Install globally
+.zed/install.sh ~
+```
+
+The installer copies commands, agents, skills, rules, and `AGENTS.md` to your project, and creates:
+- `.zed/settings.json` — Zed workspace settings with AI assistant configured to use Claude
+
+### Documentation
+
+- **Zed README**: `.zed/README.md`
+
+---
+
+## 🥧 Pi.dev Support
+
+ECC provides [pi.dev](https://pi.dev) support with 140+ skills auto-discoverable by pi's skill loading system.
+
+### Quick Start (Pi.dev)
+
+```bash
+# Install to current project
+.pi/install.sh
+
+# Install globally to ~/.pi/
+.pi/install.sh ~
+```
+
+The installer copies all ECC skills into `.pi/skills/` (pi auto-discovers these), and copies `AGENTS.md` and `CLAUDE.md` as context files.
+
+```bash
+# After install, use skills in pi
+pi
+# Inside pi:
+/skill tdd-workflow
+/skill code-review
+/skill security-review
+```
+
+### Documentation
+
+- **Pi.dev README**: `.pi/README.md`
+
+---
+
 ## Cross-Tool Feature Parity
 
 ECC is the **first plugin to maximize every major AI coding tool**. Here's how each harness compares:
 
-| Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode |
-|---------|------------|------------|-----------|----------|
-| **Agents** | 21 | Shared (AGENTS.md) | Shared (AGENTS.md) | 12 |
-| **Commands** | 52 | Shared | Instruction-based | 31 |
-| **Skills** | 102 | Shared | 10 (native format) | 37 |
-| **Hook Events** | 8 types | 15 types | None yet | 11 types |
-| **Hook Scripts** | 20+ scripts | 16 scripts (DRY adapter) | N/A | Plugin hooks |
-| **Rules** | 34 (common + lang) | 34 (YAML frontmatter) | Instruction-based | 13 instructions |
-| **Custom Tools** | Via hooks | Via hooks | N/A | 6 native tools |
-| **MCP Servers** | 14 | Shared (mcp.json) | 7 (auto-merged via TOML parser) | Full |
-| **Config Format** | settings.json | hooks.json + rules/ | config.toml | opencode.json |
-| **Context File** | CLAUDE.md + AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md |
-| **Secret Detection** | Hook-based | beforeSubmitPrompt hook | Sandbox-based | Hook-based |
-| **Auto-Format** | PostToolUse hook | afterFileEdit hook | N/A | file.edited hook |
-| **Version** | Plugin | Plugin | Reference config | 1.9.0 |
+| Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode | VS Code | Zed | Pi.dev |
+|---------|------------|------------|-----------|----------|---------|-----|--------|
+| **Agents** | 21 | Shared (AGENTS.md) | Shared (AGENTS.md) | 12 | Shared | Shared | Via context |
+| **Commands** | 52 | Shared | Instruction-based | 31 | Shared | Shared | Via skills |
+| **Skills** | 102 | Shared | 10 (native format) | 37 | Shared | Shared | 140+ (native) |
+| **Hook Events** | 8 types | 15 types | None yet | 11 types | N/A | N/A | Extension API |
+| **Hook Scripts** | 20+ scripts | 16 scripts (DRY adapter) | N/A | Plugin hooks | N/A | N/A | N/A |
+| **Rules** | 34 (common + lang) | 34 (YAML frontmatter) | Instruction-based | 13 instructions | Shared | Shared | N/A |
+| **Custom Tools** | Via hooks | Via hooks | N/A | 6 native tools | N/A | N/A | Extension API |
+| **MCP Servers** | 14 | Shared (mcp.json) | 7 (auto-merged via TOML parser) | Full | Shared | N/A | N/A |
+| **Config Format** | settings.json | hooks.json + rules/ | config.toml | opencode.json | settings.json | settings.json | settings.json |
+| **Context File** | CLAUDE.md + AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md | AGENTS.md + CLAUDE.md |
+| **Secret Detection** | Hook-based | beforeSubmitPrompt hook | Sandbox-based | Hook-based | N/A | N/A | N/A |
+| **Auto-Format** | PostToolUse hook | afterFileEdit hook | N/A | file.edited hook | editor.formatOnSave | N/A | N/A |
+| **Version** | Plugin | Plugin | Reference config | 1.9.0 | Install script | Install script | Install script |
 
 **Key architectural decisions:**
 - **AGENTS.md** at root is the universal cross-tool file (read by all 4 tools)
